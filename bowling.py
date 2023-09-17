@@ -51,5 +51,5 @@ def bowling(input):
 
 if __name__ == '__main__':
   doctest.testmod()
-  # with open('scores.txt', 'r') as score_file:
-  #   print(bowling(score_file.read()))
+  with open('scores.txt', 'r') as score_file:
+    print(bowling(score_file.read()))

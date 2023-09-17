@@ -88,5 +88,3 @@ if __name__ == '__main__':
   doctest.testmod()
   with open('scores_3.txt', 'r') as score_file:
     print(bowling(score_file.read()))
-  # example = "Yatas Del Lana 3 5 3 5 7 2 3 0 10 4 3\nEve Stojbs 3 7 3 3 9 1 6 4 2 3 1 0"
-  # print(bowling(example))
