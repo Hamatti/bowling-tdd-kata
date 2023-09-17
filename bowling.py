@@ -6,7 +6,6 @@ def parse_bowling_input(input):
   players = []
   player_inputs = input.split('\n')
   for player in player_inputs:
-    print(player)
     scores = [int(s) for s in re.findall('-?\d+', player)]
     if invalid_scores := [str(score) for score in scores if score < 0 or score > 10]:
         raise ValueError(f'{", ".join(invalid_scores)} is invalid score')
@@ -52,5 +51,5 @@ def bowling(input):
 
 if __name__ == '__main__':
   doctest.testmod()
-  with open('scores.txt', 'r') as score_file:
-    print(bowling(score_file.read()))
+  # with open('scores.txt', 'r') as score_file:
+  #   print(bowling(score_file.read()))

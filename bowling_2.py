@@ -1,12 +1,15 @@
 import doctest
 import re
 import sys
+from itertools import pairwise
+
+def pprint(*args):
+  print(*args, file=sys.stderr)
 
 def parse_bowling_input(input):
   players = []
   player_inputs = input.split('\n')
   for player in player_inputs:
-    print(player)
     scores = [int(s) for s in re.findall('-?\d+', player)]
     if invalid_scores := [str(score) for score in scores if score < 0 or score > 10]:
         raise ValueError(f'{", ".join(invalid_scores)} is invalid score')
@@ -20,37 +23,50 @@ def parse_bowling_input(input):
 def bowling(input):
   """
   >>> bowling("Juhis 10")
-  ('Juhis', 10)
+  ('Juhis', 20)
   >>> bowling("Eve Stojbs 10")
-  ('Eve Stojbs', 10)
-  >>> bowling("Juhis 10 7")
-  ('Juhis', 17)
-  >>> bowling("Juhis 10 7\\nEve Stojbs 6 5")
-  ('Juhis', 17)
-  >>> bowling("Juhis 0\\nEve Stojbs 8 9 10")
-  ('Eve Stojbs', 27)
-  >>> bowling("Eve Stojbs 6 5\\nJuhis 10 7")
-  ('Juhis', 17)
-  >>> bowling("Eve Stojbs 11")
-  Traceback (most recent call last):
-     ...
-  ValueError: 11 is invalid score
-  >>> bowling('Eve 2 -1 3')
-  Traceback (most recent call last):
-     ...
-  ValueError: -1 is invalid score
-  >>> bowling("Eve Stojbs")
-  ('Eve Stojbs', 0)
+  ('Eve Stojbs', 20)
+  >>> bowling("Juhis 3 5")
+  ('Juhis', 8)
+  >>> bowling("Juhis 4 6")
+  ('Juhis', 15)
+  >>> bowling("Juhis 10 4 6 7 1\\nEve Stojbs 4 4 5 5 7 1")
+  ('Juhis', 43)
+  >>> bowling('Juhis 0 10 4 5')
+  ('Juhis', 24)
   """
   winner = (None, -1)
   players = parse_bowling_input(input)
   for name, scores in players:
+    pprint(name, scores)
+    strikes = 0
+    spares = 0
+    first_throw = True
+    frame_score = 0
+    for score in scores:
+      if first_throw:
+        if score == 10:
+          strikes += 1
+        else:
+          frame_score += score
+          first_throw = False
+      else:
+        frame_score += score
+        if frame_score == 10:
+          spares += 1
+        first_throw = True
+        frame_score = 0
+
+    pprint(strikes, spares)
     total_score = sum(scores) if scores else 0
+    total_score += 10 * strikes + 5 * spares
     if total_score > winner[1]:
       winner = (name, total_score)
   return winner
 
 if __name__ == '__main__':
-  # doctest.testmod()
-  with open('scores.txt', 'r') as score_file:
-    print(bowling(score_file.read()))
+  doctest.testmod()
+  # with open('scores_2.txt', 'r') as score_file:
+  #   print(bowling(score_file.read()))
+  # example = "Yatas Del Lana 3 5 3 5 7 2 3 0 10 4 3\nEve Stojbs 3 7 3 3 9 1 6 4 2 3 1 0"
+  # print(bowling(example))
